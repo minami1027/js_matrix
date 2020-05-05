@@ -1,0 +1,65 @@
+<html>
+
+<head>
+    <title>textrain</title>
+    <meta charset="UTF-8">
+</head>
+
+<body style="margin:0">
+<!-- canvasタグを用意 -->
+    <canvas id="textrain"></canvas>
+</body>
+<script type="text/javascript">
+//canvasタグ対応ブラウザか判定
+    var textrain = document.getElementById('textrain');
+    if (!textrain) {
+        alert('canvas非対応ブラウザです。');
+    }
+    else {
+        //ブラウザのウィンドウ表示領域を取得
+        var width = textrain.width = window.innerWidth;
+        var height = textrain.height = window.innerHeight;
+
+        //横一列に描画するテキストのY座標を配列へ格納
+        var records = Array(256);
+        for (var i = 0; i < records.length; i++) {
+            records[i] = 1;
+        }
+
+        //text rainへ流す文字列達を定義
+        var texts = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        texts += "abcdefghijklmnopqrstuvwxyz";
+        texts += "123456789";
+        texts += "@#$%^&*()*&^%";
+
+        //text rainを描画する関数を定義
+        var draw = function () {
+            //canvasタグへ四角形を描画
+            textrain.getContext('2d').fillStyle = 'rgba(0, 0, 0, 0.05)';
+            textrain.getContext('2d').fillRect(0, 0, width, height);
+
+            //canvasタグへテキストを描画する際のスタイルを定義
+            textrain.getContext('2d').fillStyle = '#0F0';
+            textrain.getContext('2d').font = "12px 'Monaco'";
+
+            //横一列にテキストを描画する処理を定義
+            records.map(function (y_pos, index) {
+                //JavaScriptのランダム関数を使用して、描画するテキストを1文字だけランダムに取得
+                var text = texts[Math.floor(Math.random() * texts.length)];
+                //canvasタグへ描画するテキストのX座標を決める。10ずつ掛け算して描画するテキストが横一列に描画
+                x_pos = index * 10;
+
+                //canvasタグへテキストを描画。ここでランダムに取得した1文字を描画
+                textrain.getContext('2d').fillText(text, x_pos, y_pos);
+                //次にテキストを描画する際のY座標を更新。ここでは下方向へテキストが描画されるように10ずつ加算する
+                records[index] = (y_pos > 0 + Math.random() * 1e4) ? 0 : y_pos + 10;
+                console.log(y_pos, index, text);
+            });
+        };
+        //テキスト描画を行うスピードをミリ秒で指定。数字を大きくするとテキストが描画される速度が遅くなる。
+        setInterval(draw, 300);
+    }
+
+</script>
+
+</html>
